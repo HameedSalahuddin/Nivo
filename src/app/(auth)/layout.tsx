@@ -1,5 +1,4 @@
 import type { ReactNode } from "react";
-import Image from "next/image";
 import Link from "next/link";
 
 export default function AuthLayout({ children }: { children: ReactNode }) {
@@ -16,13 +15,6 @@ export default function AuthLayout({ children }: { children: ReactNode }) {
       <header className="relative z-10 w-full">
         <div className="mx-auto flex w-full max-w-7xl items-center justify-between px-margin-mobile py-4 md:px-margin-desktop">
           <Link href="/welcome" className="flex items-center gap-2">
-            <Image
-              src="/logo.png"
-              alt="Nivo logo"
-              width={32}
-              height={32}
-              className="h-8 w-8 rounded-md object-contain"
-            />
             <span className="font-display-lg text-[24px] font-bold leading-tight text-sangria-deep">
               Nivo
             </span>

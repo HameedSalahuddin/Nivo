@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { isNavActive, NAV_ITEMS } from "@/lib/nav";
+import { Icon } from "@/components/ui/Icon";
 
 export function MobileNav() {
   const pathname = usePathname();
@@ -21,12 +22,7 @@ export function MobileNav() {
                 active ? "text-sangria-deep" : "text-on-surface-variant"
               }`}
             >
-              <span
-                className="material-symbols-outlined"
-                style={active ? { fontVariationSettings: "'FILL' 1" } : undefined}
-              >
-                {item.icon}
-              </span>
+              <Icon name={item.icon} />
               <span className="font-label-sm text-label-sm">{item.label}</span>
             </Link>
           );

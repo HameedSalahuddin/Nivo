@@ -1,6 +1,6 @@
 import type { CSSProperties } from "react";
-import Image from "next/image";
 import Link from "next/link";
+import { Icon } from "@/components/ui/Icon";
 
 interface BranchNodeProps {
   icon: string;
@@ -23,20 +23,22 @@ function BranchNode({
 }: BranchNodeProps) {
   return (
     <div
-      className="animate-float-up absolute z-20"
+      className="animate-float-up absolute z-10"
       style={{ ...style, animationDelay: delay }}
     >
-      <div className="flex items-center gap-3 rounded-xl border border-pebble-mist bg-surface p-4 shadow-sm">
+      <div className="flex items-center gap-3 rounded-xl border border-pebble-mist bg-surface p-3 shadow-sm sm:p-4">
         <div
-          className={`flex h-10 w-10 items-center justify-center rounded-full ${iconBg} ${iconColor}`}
+          className={`flex h-9 w-9 items-center justify-center rounded-full sm:h-10 sm:w-10 ${iconBg} ${iconColor}`}
         >
-          <span className="material-symbols-outlined">{icon}</span>
+          <Icon name={icon} className="text-[20px]" />
         </div>
         <div>
           <div className="font-label-sm text-label-sm text-on-surface-variant">
             {label}
           </div>
-          <div className="font-title-md text-[18px] text-on-surface">{amount}</div>
+          <div className="font-title-md text-[16px] text-on-surface sm:text-[18px]">
+            {amount}
+          </div>
         </div>
       </div>
     </div>
@@ -57,13 +59,6 @@ export default function WelcomePage() {
       <header className="relative z-10 w-full bg-background/80 backdrop-blur">
         <div className="mx-auto flex w-full max-w-7xl items-center justify-between px-margin-mobile py-4 md:px-margin-desktop">
           <div className="flex items-center gap-2">
-            <Image
-              src="/logo.png"
-              alt="Nivo logo"
-              width={32}
-              height={32}
-              className="h-8 w-8 rounded-md object-contain"
-            />
             <span className="font-display-lg text-[24px] font-bold leading-tight text-sangria-deep">
               Nivo
             </span>
@@ -79,17 +74,15 @@ export default function WelcomePage() {
 
       <main className="relative z-10 mx-auto flex w-full max-w-7xl flex-grow items-center px-margin-mobile py-12 md:px-margin-desktop">
         <div className="grid w-full grid-cols-1 items-center gap-12 lg:grid-cols-2">
-          <div className="flex flex-col gap-8">
+          <div className="flex min-w-0 flex-col gap-8">
             <div className="flex flex-col gap-4">
               <div className="inline-flex w-fit items-center gap-2 rounded-full bg-surface-container-low px-4 py-1.5">
-                <span className="material-symbols-outlined text-sm text-jade-botanical">
-                  trending_up
-                </span>
+                <Icon name="trending_up" className="text-sm text-jade-botanical" />
                 <span className="font-label-sm text-label-sm text-on-surface-variant">
                   Student Finance
                 </span>
               </div>
-              <h1 className="font-display-lg text-display-lg tracking-tight text-on-surface md:text-[56px] md:leading-[64px]">
+              <h1 className="font-display-lg text-[38px] leading-[46px] tracking-tight text-on-surface md:text-[52px] md:leading-[60px]">
                 Make your money work for you.
               </h1>
               <p className="max-w-md font-body-lg text-body-lg leading-relaxed text-on-surface-variant">
@@ -103,9 +96,7 @@ export default function WelcomePage() {
                 className="flex items-center gap-2 rounded-full bg-sangria-deep px-8 py-3 font-title-md text-[16px] text-white shadow-lg shadow-sangria-deep/20 transition-all duration-200 hover:bg-primary active:scale-95"
               >
                 Get started
-                <span className="material-symbols-outlined text-sm">
-                  arrow_forward
-                </span>
+                <Icon name="arrow_forward" className="text-sm" />
               </Link>
               <Link
                 href="/login"
@@ -117,12 +108,12 @@ export default function WelcomePage() {
             </div>
           </div>
 
-          <div className="relative flex h-[480px] w-full items-center justify-center md:h-[560px]">
-            <div className="glass-panel absolute left-1/2 top-1/2 z-20 flex min-w-[200px] -translate-x-1/2 -translate-y-1/2 flex-col items-center justify-center rounded-2xl p-6">
+          <div className="relative flex h-[440px] w-full items-center justify-center md:h-[560px]">
+            <div className="glass-panel absolute left-1/2 top-1/2 z-20 flex min-w-[170px] -translate-x-1/2 -translate-y-1/2 flex-col items-center justify-center rounded-2xl p-6 sm:min-w-[200px]">
               <span className="mb-1 font-label-sm text-label-sm uppercase tracking-wider text-on-surface-variant">
                 Monthly Allowance
               </span>
-              <span className="font-display-lg text-[36px] text-sangria-deep">
+              <span className="font-display-lg text-[32px] text-sangria-deep sm:text-[36px]">
                 ₹ 25,000
               </span>
             </div>
