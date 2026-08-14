@@ -3,7 +3,7 @@
 import { useActionState, useState } from "react";
 import { Button } from "@/components/ui/Button";
 import { MoneyInput } from "@/components/ui/MoneyInput";
-import { Icon } from "@/components/ui/Icon";
+import { SvgIcon } from "@/components/ui/SvgIcon";
 import { setAllowance, type OnboardingState } from "@/lib/onboarding/actions";
 
 const initialState: OnboardingState = { error: null };
@@ -44,7 +44,7 @@ export function AllowanceForm({ monthLabel }: { monthLabel: string }) {
           className="rounded-lg px-8 py-3"
         >
           <span>Continue</span>
-          <Icon name="arrow_forward" className="text-[18px]" />
+          <SvgIcon name="arrow_forward" className="h-4 w-4" />
         </Button>
       </div>
     </form>
