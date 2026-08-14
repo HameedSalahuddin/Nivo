@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { Card } from "@/components/ui/Card";
 import { SignUpForm } from "./signup-form";
 
@@ -13,6 +14,15 @@ export default function SignUpPage() {
         </p>
       </div>
       <SignUpForm />
+      <div className="mt-6 text-center">
+        <Link
+          href="/login"
+          className="font-body-md text-body-md text-on-surface-variant transition-colors hover:text-sangria-deep"
+        >
+          Already have an account?{" "}
+          <span className="font-semibold text-sangria-deep">Log in</span>
+        </Link>
+      </div>
     </Card>
   );
 }

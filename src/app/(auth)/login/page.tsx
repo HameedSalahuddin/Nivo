@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { Card } from "@/components/ui/Card";
 import { LoginForm } from "./login-form";
 
@@ -9,10 +10,19 @@ export default function LoginPage() {
           Welcome back
         </h1>
         <p className="font-body-md text-body-md text-on-surface-variant">
-          Log in to your Nivo account.
+          Manage your allowance with Nivo.
         </p>
       </div>
       <LoginForm />
+      <div className="mt-6 text-center">
+        <Link
+          href="/signup"
+          className="font-body-md text-body-md text-on-surface-variant transition-colors hover:text-sangria-deep"
+        >
+          Don&apos;t have an account?{" "}
+          <span className="font-semibold text-sangria-deep">Sign up</span>
+        </Link>
+      </div>
     </Card>
   );
 }
