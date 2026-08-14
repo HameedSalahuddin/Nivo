@@ -2,6 +2,7 @@ import { redirect } from "next/navigation";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { formatMonthLabel, getCurrentMonth } from "@/lib/onboarding/helpers";
+import { SvgIcon } from "@/components/ui/SvgIcon";
 import { AllowanceForm } from "./allowance-form";
 
 export default async function AllowancePage() {
@@ -28,9 +29,7 @@ export default async function AllowancePage() {
               href="/welcome"
               className="group mb-6 inline-flex items-center gap-1 text-on-surface-variant transition-colors hover:text-sangria-deep"
             >
-              <span className="material-symbols-outlined text-[20px] transition-transform group-active:-translate-x-1">
-                arrow_back
-              </span>
+              <SvgIcon name="arrow_back" className="h-5 w-5 transition-transform group-active:-translate-x-1" />
               <span className="font-label-sm text-label-sm">Back</span>
             </Link>
             <h1 className="mb-1 font-headline-lg text-headline-lg text-on-surface">

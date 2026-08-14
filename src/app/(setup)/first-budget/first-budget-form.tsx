@@ -4,6 +4,7 @@ import { useActionState, useState } from "react";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { MoneyInput } from "@/components/ui/MoneyInput";
+import { SvgIcon } from "@/components/ui/SvgIcon";
 import { formatINR } from "@/lib/money";
 import { createFirstBudget, type OnboardingState } from "@/lib/onboarding/actions";
 
@@ -47,7 +48,7 @@ export function FirstBudgetForm({ allowance }: { allowance: number }) {
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 placeholder="e.g. Groceries"
-                leadingIcon="category"
+                leadingIcon={<SvgIcon name="tag" className="h-5 w-5" />}
                 autoComplete="off"
               />
             </div>
@@ -83,7 +84,7 @@ export function FirstBudgetForm({ allowance }: { allowance: number }) {
                 className="rounded-xl py-3 font-title-md text-title-md shadow-[0_4px_14px_rgba(122,18,41,0.25)]"
               >
                 Go to Nivo
-                <span className="material-symbols-outlined">arrow_forward</span>
+                <SvgIcon name="arrow_forward" className="h-5 w-5" />
               </Button>
             </div>
           </form>
@@ -101,12 +102,7 @@ export function FirstBudgetForm({ allowance }: { allowance: number }) {
         />
         <div className="relative flex w-full max-w-lg flex-col items-center">
           <div className="absolute -top-12 flex animate-bounce items-center gap-2 rounded-full bg-surface-container-lowest px-6 py-2 shadow-[0_8px_32px_rgba(122,18,41,0.08)]">
-            <span
-              className="material-symbols-outlined text-jade-botanical"
-              style={{ fontVariationSettings: "'FILL' 1" }}
-            >
-              check_circle
-            </span>
+            <SvgIcon name="check" className="h-5 w-5 text-jade-botanical" />
             <span className="font-title-md text-title-md text-sangria-deep">
               Your first branch is ready 🎉
             </span>
@@ -138,12 +134,7 @@ export function FirstBudgetForm({ allowance }: { allowance: number }) {
           <div className="relative z-10 w-80 rounded-xl border border-surface-container-high bg-surface-container-lowest p-6 shadow-[0_16px_40px_rgba(122,18,41,0.08)] transition-colors hover:border-sangria-deep/20">
             <div className="mb-4 flex items-center gap-3">
               <div className="flex h-10 w-10 items-center justify-center rounded-full bg-surface-container-low text-sangria-deep">
-                <span
-                  className="material-symbols-outlined"
-                  style={{ fontVariationSettings: "'FILL' 1" }}
-                >
-                  shopping_cart
-                </span>
+                <SvgIcon name="cart" className="h-5 w-5" />
               </div>
               <div>
                 <h3 className="font-title-md text-title-md text-on-surface">

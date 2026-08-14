@@ -1,14 +1,14 @@
-import type { InputHTMLAttributes } from "react";
+import type { InputHTMLAttributes, ReactNode } from "react";
 
 interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
-  leadingIcon?: string;
+  leadingIcon?: ReactNode;
 }
 
 export function Input({ leadingIcon, className = "", ...props }: InputProps) {
   return (
     <div className="relative">
       {leadingIcon && (
-        <span className="material-symbols-outlined pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant">
+        <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant">
           {leadingIcon}
         </span>
       )}

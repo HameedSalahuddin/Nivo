@@ -11,7 +11,6 @@ export const metadata: Metadata = {
   title: "Nivo",
   description:
     "Track your monthly allowance, create budget branches, and record expenses.",
-  icons: { icon: "/logo.png" },
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {

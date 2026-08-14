@@ -1,5 +1,12 @@
-@import url("https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200");
 @import "tailwindcss";
+
+@font-face {
+  font-family: "Material Symbols Outlined";
+  src: url("/fonts/material-symbols-outlined.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: block;
+}
 
 @theme {
   /* Brand */
@@ -109,15 +116,15 @@
   --text-label-sm--font-weight: 500;
 
   /* Spacing */
-  --spacing-base: 4px;
-  --spacing-xs: 8px;
-  --spacing-sm: 16px;
-  --spacing-md: 24px;
-  --spacing-lg: 32px;
-  --spacing-xl: 48px;
-  --spacing-gutter: 16px;
   --spacing-margin-desktop: 40px;
   --spacing-margin-mobile: 20px;
+
+  /* Container scale (max-w-*) */
+  --container-xs: 20rem;
+  --container-sm: 24rem;
+  --container-md: 28rem;
+  --container-lg: 32rem;
+  --container-xl: 36rem;
 
   /* Shadows */
   --shadow-level-1: 0 4px 20px rgba(0, 0, 0, 0.04);
@@ -140,6 +147,23 @@ input[type="number"]::-webkit-outer-spin-button {
 input[type="number"] {
   -moz-appearance: textfield;
   appearance: textfield;
+}
+
+/* Material Symbols Outlined (self-hosted subset) */
+.material-symbols-outlined {
+  font-family: "Material Symbols Outlined";
+  font-weight: normal;
+  font-style: normal;
+  line-height: 1;
+  letter-spacing: normal;
+  text-transform: none;
+  display: inline-block;
+  white-space: nowrap;
+  word-wrap: normal;
+  direction: ltr;
+  -webkit-font-smoothing: antialiased;
+  font-size: 24px;
+  vertical-align: middle;
 }
 
 /* Welcome page (botanical branching) */

@@ -2,6 +2,7 @@
 
 import { getCategoryIcon } from "@/lib/categories";
 import { CATEGORY_NAMES, type CategoryName } from "@/lib/types";
+import { Icon } from "@/components/ui/Icon";
 
 interface CategoryPickerProps {
   value: CategoryName;
@@ -25,9 +26,7 @@ export function CategoryPicker({ value, onChange }: CategoryPickerProps) {
                 : "border-surface-variant bg-surface text-on-surface-variant hover:border-sangria-deep/30"
             }`}
           >
-            <span className="material-symbols-outlined text-xl">
-              {getCategoryIcon(category)}
-            </span>
+            <Icon name={getCategoryIcon(category)} className="text-xl" />
             <span className="font-label-sm text-label-sm">{category}</span>
           </button>
         );

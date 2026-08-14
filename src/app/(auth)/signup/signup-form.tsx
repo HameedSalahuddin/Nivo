@@ -3,6 +3,7 @@
 import { useActionState } from "react";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
+import { SvgIcon } from "@/components/ui/SvgIcon";
 import { signUp, type AuthActionState } from "@/lib/auth/actions";
 
 const initialState: AuthActionState = { error: null, message: null };
@@ -26,7 +27,7 @@ export function SignUpForm() {
           autoComplete="email"
           required
           placeholder="you@example.com"
-          leadingIcon="mail"
+          leadingIcon={<SvgIcon name="mail" className="h-5 w-5" />}
         />
       </div>
       <div className="flex flex-col gap-2">
@@ -44,7 +45,7 @@ export function SignUpForm() {
           required
           minLength={6}
           placeholder="At least 6 characters"
-          leadingIcon="lock"
+          leadingIcon={<SvgIcon name="lock" className="h-5 w-5" />}
         />
       </div>
       {state.error && (

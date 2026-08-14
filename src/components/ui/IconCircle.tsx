@@ -1,3 +1,5 @@
+import { Icon } from "@/components/ui/Icon";
+
 interface IconCircleProps {
   icon: string;
   // Tinted background + icon colour, e.g. "bg-sangria-deep/10 text-sangria-deep".
@@ -20,7 +22,7 @@ export function IconCircle({
     <span
       className={`flex shrink-0 items-center justify-center rounded-full ${sizes[size]} ${className}`}
     >
-      <span className="material-symbols-outlined text-[20px]">{icon}</span>
+      <Icon name={icon} className="text-[20px]" />
     </span>
   );
 }

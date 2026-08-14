@@ -2,6 +2,7 @@
 
 import { useEffect } from "react";
 import type { ReactNode } from "react";
+import { Icon } from "@/components/ui/Icon";
 
 interface ModalProps {
   open: boolean;
@@ -43,7 +44,7 @@ export function Modal({ open, onClose, title, children }: ModalProps) {
             onClick={onClose}
             aria-label="Close"
           >
-            <span className="material-symbols-outlined">close</span>
+            <Icon name="close" />
           </button>
         </div>
         {children}
