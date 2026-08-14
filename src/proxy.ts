@@ -2,7 +2,13 @@ import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 import { getSupabaseEnv } from "@/lib/supabase/env";
 
-const PROTECTED_PATHS = ["/budgets", "/expenses", "/settings"];
+const PROTECTED_PATHS = [
+  "/budgets",
+  "/expenses",
+  "/settings",
+  "/allowance",
+  "/first-budget",
+];
 const AUTH_PATHS = ["/welcome", "/login", "/signup"];
 
 function needsAuth(pathname: string): boolean {
