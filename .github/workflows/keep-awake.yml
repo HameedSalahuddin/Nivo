@@ -1,0 +1,20 @@
+name: Keep Supabase awake
+
+on:
+  schedule:
+    - cron: "0 8 * * *"
+  workflow_dispatch:
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    env:
+      SUPABASE_URL: https://msguidgajmtglxlrjsle.supabase.co
+      SUPABASE_PUBLISHABLE_KEY: sb_publishable_AA85BkZxVYbrjktrLtU3dQ_PcEAzec0
+    steps:
+      - name: Ping Supabase REST endpoint
+        run: |
+          curl -sf \
+            -H "apikey: $SUPABASE_PUBLISHABLE_KEY" \
+            -H "Authorization: Bearer $SUPABASE_PUBLISHABLE_KEY" \
+            "$SUPABASE_URL/rest/v1/months?select=id&limit=1"
