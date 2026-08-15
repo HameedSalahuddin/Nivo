@@ -43,9 +43,7 @@ export async function updateSession(request: NextRequest) {
 
   const { pathname } = request.nextUrl;
 
-  // TEMP E2E bypass — revert me
-  const isE2E = request.cookies.get("NIVO_E2E")?.value === "1";
-  if (!user && needsAuth(pathname) && !isE2E) {
+  if (!user && needsAuth(pathname)) {
     const redirectUrl = request.nextUrl.clone();
     redirectUrl.pathname = "/welcome";
     return NextResponse.redirect(redirectUrl);
