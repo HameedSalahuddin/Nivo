@@ -17,6 +17,11 @@ interface ExpensesManagerProps {
   budgets: Budget[];
 }
 
+// Single source of truth for the desktop expense columns. The header and every
+// row share this exact structure so values stay aligned.
+const LIST_GRID_COLS = "minmax(0, 1fr) 7.5rem 7.5rem 6rem 6rem";
+const listGridStyle = { gridTemplateColumns: LIST_GRID_COLS } as const;
+
 function formatShortDate(dateStr: string): string {
   const date = new Date(`${dateStr}T00:00:00`);
   if (Number.isNaN(date.getTime())) return dateStr;
@@ -75,7 +80,10 @@ export function ExpensesManager({ expenses, budgets }: ExpensesManagerProps) {
           </div>
         ) : (
           <div className="mt-4">
-            <div className="mb-2 hidden items-center gap-4 lg:grid lg:grid-cols-[minmax(0,1fr)_7.5rem_7.5rem_6rem_6rem]">
+            <div
+              style={listGridStyle}
+              className="mb-2 hidden items-center gap-4 lg:grid"
+            >
               <span className="font-label-sm text-label-sm text-on-surface-variant">Expense</span>
               <span className="font-label-sm text-label-sm text-on-surface-variant">Category</span>
               <span className="font-label-sm text-label-sm text-on-surface-variant">Budget</span>
@@ -88,9 +96,10 @@ export function ExpensesManager({ expenses, budgets }: ExpensesManagerProps) {
               {expenses.map((expense) => (
                 <li
                   key={expense.id}
-                  className="flex flex-wrap items-center justify-between gap-x-4 gap-y-1.5 py-4 lg:grid lg:grid-cols-[minmax(0,1fr)_7.5rem_7.5rem_6rem_6rem] lg:items-center lg:gap-4"
+                  style={listGridStyle}
+                  className="flex flex-wrap items-center justify-between gap-x-4 gap-y-1.5 py-4 lg:grid lg:items-center lg:gap-4"
                 >
-                  <div className="min-w-0 flex-1 lg:col-start-1">
+                  <div className="min-w-0 flex-1">
                     <p className="truncate font-title-md text-[16px] text-on-surface">
                       {expense.name}
                     </p>
@@ -98,7 +107,17 @@ export function ExpensesManager({ expenses, budgets }: ExpensesManagerProps) {
                       {budgetName(expense.budget_id)}
                     </p>
                   </div>
-                  <p className="font-title-md text-[16px] text-on-surface lg:col-start-5 lg:text-right">
+                  <Chip className="hidden bg-surface-variant text-on-surface-variant lg:flex">
+                    <Icon name={getCategoryIcon(expense.category)} className="text-[16px]" />
+                    {expense.category}
+                  </Chip>
+                  <span className="hidden font-body-md text-body-md text-on-surface-variant lg:block">
+                    {budgetName(expense.budget_id)}
+                  </span>
+                  <span className="hidden font-body-md text-body-md text-on-surface-variant lg:block">
+                    {formatShortDate(expense.date)}
+                  </span>
+                  <p className="font-title-md text-[16px] text-on-surface lg:text-right">
                     -{formatINR(expense.amount)}
                   </p>
                   <div className="flex w-full flex-wrap items-center gap-x-4 gap-y-1 lg:hidden">
@@ -110,16 +129,6 @@ export function ExpensesManager({ expenses, budgets }: ExpensesManagerProps) {
                       {formatShortDate(expense.date)}
                     </span>
                   </div>
-                  <Chip className="hidden bg-surface-variant text-on-surface-variant lg:col-start-2 lg:flex">
-                    <Icon name={getCategoryIcon(expense.category)} className="text-[16px]" />
-                    {expense.category}
-                  </Chip>
-                  <span className="hidden font-body-md text-body-md text-on-surface-variant lg:col-start-3 lg:block">
-                    {budgetName(expense.budget_id)}
-                  </span>
-                  <span className="hidden font-body-md text-body-md text-on-surface-variant lg:col-start-4 lg:block">
-                    {formatShortDate(expense.date)}
-                  </span>
                 </li>
               ))}
             </ul>
