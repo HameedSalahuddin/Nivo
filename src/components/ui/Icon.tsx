@@ -14,6 +14,7 @@ const ICON_CODEPOINTS: Record<string, string> = {
   home: "\uE88A",
   local_mall: "\uE54C",
   lock: "\uE88D",
+  logout: "\uE9BA",
   mail: "\uE0BE",
   menu_book: "\uEA19",
   movie: "\uE02C",
