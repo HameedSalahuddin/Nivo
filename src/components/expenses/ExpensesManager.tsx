@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { Chip } from "@/components/ui/Chip";
@@ -23,7 +24,15 @@ function formatShortDate(dateStr: string): string {
 }
 
 export function ExpensesManager({ expenses, budgets }: ExpensesManagerProps) {
-  const [modalOpen, setModalOpen] = useState(false);
+  const searchParams = useSearchParams();
+  const addFromUrl = searchParams.get("add") === "1";
+  const [modalOpen, setModalOpen] = useState(addFromUrl);
+  const [prevAddFromUrl, setPrevAddFromUrl] = useState(addFromUrl);
+
+  if (addFromUrl !== prevAddFromUrl) {
+    setPrevAddFromUrl(addFromUrl);
+    if (addFromUrl) setModalOpen(true);
+  }
 
   const budgetName = (id: string) => budgets.find((b) => b.id === id)?.name ?? "Unbudgeted";
 
