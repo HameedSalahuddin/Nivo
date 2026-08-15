@@ -3,7 +3,6 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { isNavActive, NAV_ITEMS } from "@/lib/nav";
-import { Button } from "@/components/ui/Button";
 import { Icon } from "@/components/ui/Icon";
 
 export function SideNav() {
@@ -41,10 +40,13 @@ export function SideNav() {
         })}
       </div>
 
-      <Button fullWidth className="mt-auto">
+      <Link
+        href="/expenses?add=1"
+        className="mt-auto flex w-full items-center justify-center gap-2 rounded-lg bg-sangria-deep px-4 py-2 font-label-sm text-label-sm text-white shadow-level-1 transition-all duration-200 hover:bg-primary hover:shadow-level-2 active:scale-95"
+      >
         <Icon name="add" className="text-[18px]" />
         Add Expense
-      </Button>
+      </Link>
     </nav>
   );
 }
