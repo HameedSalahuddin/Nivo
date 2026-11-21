@@ -1,6 +1,7 @@
 "use client";
 
 import { useActionState } from "react";
+import Link from "next/link";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { SvgIcon } from "@/components/ui/SvgIcon";
@@ -46,6 +47,14 @@ export function LoginForm() {
           placeholder="Your password"
           leadingIcon={<SvgIcon name="lock" className="h-5 w-5" />}
         />
+      </div>
+      <div className="-mt-2 flex justify-end">
+        <Link
+          href="/forgot-password"
+          className="font-label-sm text-label-sm text-sangria-deep hover:underline"
+        >
+          Forgot password?
+        </Link>
       </div>
       {state.error && (
         <p className="font-body-md text-body-md text-error" role="alert">
