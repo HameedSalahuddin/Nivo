@@ -5,6 +5,7 @@ import { getSupabaseEnv } from "@/lib/supabase/env";
 const PROTECTED_PATHS = [
   "/budgets",
   "/expenses",
+  "/income",
   "/settings",
   "/allowance",
   "/first-budget",
