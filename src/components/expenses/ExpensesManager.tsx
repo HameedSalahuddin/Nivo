@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useSearchParams } from "next/navigation";
+import Link from "next/link";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { Chip } from "@/components/ui/Chip";
@@ -50,10 +51,19 @@ export function ExpensesManager({ expenses, budgets }: ExpensesManagerProps) {
             Track your daily spending and see where your money goes.
           </p>
         </div>
-        <Button onClick={() => setModalOpen(true)}>
-          <Icon name="add" className="text-[18px]" />
-          Add Expense
-        </Button>
+        <div className="flex flex-wrap items-center gap-3">
+          <Link
+            href="/income?add=1"
+            className="flex items-center gap-2 rounded-lg bg-jade-botanical/15 px-4 py-2 font-label-sm text-label-sm text-jade-botanical transition-all hover:bg-jade-botanical/25 active:scale-95"
+          >
+            <Icon name="add" className="text-[18px]" />
+            Add money
+          </Link>
+          <Button onClick={() => setModalOpen(true)}>
+            <Icon name="add" className="text-[18px]" />
+            Add Expense
+          </Button>
+        </div>
       </header>
 
       <Card className="p-5 md:p-6">

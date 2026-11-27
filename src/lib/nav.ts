@@ -8,6 +8,7 @@ export const NAV_ITEMS: NavItem[] = [
   { href: "/", label: "Dashboard", icon: "dashboard" },
   { href: "/budgets", label: "Budgets", icon: "account_balance_wallet" },
   { href: "/expenses", label: "Expenses", icon: "receipt_long" },
+  { href: "/income", label: "Money in", icon: "savings" },
   { href: "/settings", label: "Settings", icon: "settings" },
 ];
 

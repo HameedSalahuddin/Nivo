@@ -1,4 +1,4 @@
-import type { Budget, CategoryName, Expense } from "./types";
+import type { Budget, CategoryName, Expense, IncomingTransaction } from "./types";
 
 // Derived financial values (PRD §7). These are always computed from the
 // underlying data — never stored in the database.
@@ -54,3 +54,37 @@ export function percentAllocated(allowance: number, allocated: number): number {
   if (allowance <= 0) return 0;
   return Math.min((allocated / allowance) * 100, 100);
 }
+
+// ── Money Received helpers ────────────────────────────────────────────────────
+
+/** Sum of ALL incoming transaction amounts regardless of type. */
+export function totalIncoming(transactions: IncomingTransaction[]): number {
+  return transactions.reduce((sum, t) => sum + t.amount, 0);
+}
+
+/** Sum of transactions typed 'income' (new money: allowance top-up, scholarship, etc.) */
+export function totalIncome(transactions: IncomingTransaction[]): number {
+  return transactions
+    .filter((t) => t.type === "income")
+    .reduce((sum, t) => sum + t.amount, 0);
+}
+
+/** Sum of transactions typed 'repayment' (friend paying back, reimbursement, etc.) */
+export function totalRepayments(transactions: IncomingTransaction[]): number {
+  return transactions
+    .filter((t) => t.type === "repayment")
+    .reduce((sum, t) => sum + t.amount, 0);
+}
+
+/**
+ * Available funds = Starting allowance + Income + Repayments − Expenses.
+ * Transfers are intentionally excluded — they represent money already in the
+ * user's possession being moved between accounts, not new money arriving.
+ */
+export function availableFunds(
+  allowance: number,
+  transactions: IncomingTransaction[],
+  spent: number,
+): number {
+  return allowance + totalIncome(transactions) + totalRepayments(transactions) - spent;
+}

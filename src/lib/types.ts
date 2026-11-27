@@ -35,3 +35,19 @@ export interface Expense {
   category: CategoryName;
   date: string; // ISO date "YYYY-MM-DD"
 }
+
+// 'income'     — genuinely new money (allowance top-up, scholarship, part-time earnings, gift, etc.)
+// 'repayment'  — friend paying back borrowed money / shared-expense reimbursement
+// 'transfer'   — money moved from another personal account (not counted as new income)
+export const INCOMING_TYPES = ["income", "repayment", "transfer"] as const;
+export type IncomingType = (typeof INCOMING_TYPES)[number];
+
+export interface IncomingTransaction {
+  id: string;
+  month_id: string;
+  amount: number;
+  source: string;
+  type: IncomingType;
+  date: string; // ISO date "YYYY-MM-DD"
+  description?: string | null;
+}

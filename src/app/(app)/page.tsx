@@ -3,14 +3,16 @@ import { createClient } from "@/lib/supabase/server";
 import { getCurrentMonth, formatMonthLabel } from "@/lib/onboarding/helpers";
 import { formatINR } from "@/lib/money";
 import { getCategoryIcon } from "@/lib/categories";
-import type { Budget, Expense } from "@/lib/types";
+import type { Budget, Expense, IncomingTransaction, Month } from "@/lib/types";
 import {
+  availableFunds,
   progressRatio,
   remainingForBudget,
   spentByCategory,
   spentForBudget,
   totalAllocated,
-  totalRemaining,
+  totalIncome,
+  totalRepayments,
   totalSpent,
   unallocated,
 } from "@/lib/calc";
@@ -21,6 +23,7 @@ import { Icon } from "@/components/ui/Icon";
 import { IconCircle } from "@/components/ui/IconCircle";
 import { ProgressBar } from "@/components/ui/ProgressBar";
 import { StatCard } from "@/components/ui/StatCard";
+import { MonthFilter } from "@/components/income/MonthFilter";
 
 function formatShortDate(dateStr: string): string {
   const date = new Date(`${dateStr}T00:00:00`);
@@ -28,7 +31,11 @@ function formatShortDate(dateStr: string): string {
   return date.toLocaleDateString("en-IN", { day: "numeric", month: "short" });
 }
 
-export default async function DashboardPage() {
+interface DashboardPageProps {
+  searchParams: Promise<{ month?: string }>;
+}
+
+export default async function DashboardPage({ searchParams }: DashboardPageProps) {
   const supabase = await createClient();
   const {
     data: { user },
@@ -36,13 +43,20 @@ export default async function DashboardPage() {
   if (!user) return null;
 
   const currentMonth = getCurrentMonth();
-
-  const { data: month } = await supabase
+  const { data: months } = await supabase
     .from("months")
-    .select("id, allowance")
+    .select("id, month, allowance")
     .eq("user_id", user.id)
-    .eq("month", currentMonth)
-    .maybeSingle();
+    .order("month", { ascending: false });
+  const monthList = (months ?? []) as Month[];
+  const params = await searchParams;
+  const requestedMonth = params.month ?? currentMonth;
+  const validMonth = /^\d{4}-(0[1-9]|1[0-2])$/.test(requestedMonth);
+  const availableMonths = Array.from(new Set([currentMonth, ...monthList.map((m) => m.month)])).sort().reverse();
+  const selectedMonth = validMonth && availableMonths.includes(requestedMonth)
+    ? requestedMonth
+    : currentMonth;
+  const month = monthList.find((item) => item.month === selectedMonth);
   if (!month) return null;
 
   const { data: budgets } = await supabase
@@ -63,38 +77,64 @@ export default async function DashboardPage() {
       : { data: [] };
   const expenseList = (expenses ?? []) as Expense[];
 
+  // Fetch incoming transactions for this month
+  const { data: incoming } = await supabase
+    .from("incoming_transactions")
+    .select("id, month_id, amount, source, type, date, description")
+    .eq("month_id", month.id)
+    .order("date", { ascending: false });
+  const incomingList = (incoming ?? []) as IncomingTransaction[];
+
   const allowance = month.allowance;
   const spent = totalSpent(expenseList);
-  const remaining = totalRemaining(allowance, spent);
+  const incomeReceived = totalIncome(incomingList);
+  const repaymentsReceived = totalRepayments(incomingList);
+  const moneyReceived = incomeReceived + repaymentsReceived; // transfers excluded from balance
+  const funds = availableFunds(allowance, incomingList, spent);
   const allocated = totalAllocated(budgetList);
   const unallocatedAmount = unallocated(allowance, allocated);
   const spendProgress = allowance > 0 ? Math.min(spent / allowance, 1) : 0;
   const spendPercent = Math.round(spendProgress * 100);
   const categories = spentByCategory(expenseList);
   const recentExpenses = expenseList.slice(0, 6);
+  const recentIncoming = incomingList.slice(0, 3);
 
   return (
     <div className="mx-auto flex w-full max-w-5xl flex-col gap-6">
+      {/* ── Header ── */}
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div>
           <h1 className="font-headline-lg text-headline-lg text-on-surface">Dashboard</h1>
           <p className="mt-1 font-body-md text-body-md text-on-surface-variant">
-            {formatMonthLabel(currentMonth)}
+            {formatMonthLabel(selectedMonth)}
           </p>
         </div>
-        {allowance > 0 && (
-          <Chip className="bg-surface-container text-on-surface-variant">
-            <Icon name="trending_up" className="text-[16px]" />
-            {spendPercent}% of allowance used
-          </Chip>
-        )}
+        <div className="flex flex-wrap items-center gap-3">
+          {allowance > 0 && (
+            <Chip className="bg-surface-container text-on-surface-variant">
+              <Icon name="trending_up" className="text-[16px]" />
+              {spendPercent}% of allowance used
+            </Chip>
+          )}
+          <MonthFilter months={availableMonths} selectedMonth={selectedMonth} />
+          <Link
+            href={`/income?month=${selectedMonth}&add=1`}
+            className="flex items-center gap-2 rounded-lg bg-jade-botanical/15 px-4 py-2 font-label-sm text-label-sm text-jade-botanical transition-all hover:bg-jade-botanical/25 active:scale-95"
+          >
+            <Icon name="add" className="text-[16px]" />
+            Add money
+          </Link>
+        </div>
       </div>
 
-      <section className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+      {/* ── Stat cards ── */}
+      <section
+        className={`grid grid-cols-1 gap-4 sm:grid-cols-2 ${moneyReceived > 0 ? "lg:grid-cols-4" : "sm:grid-cols-3"}`}
+      >
         <StatCard
           icon="account_balance_wallet"
           iconClass="bg-secondary-container text-on-secondary-container"
-          label="Monthly allowance"
+          label="Starting budget"
           value={formatINR(allowance)}
           sub={
             unallocatedAmount > 0
@@ -104,31 +144,49 @@ export default async function DashboardPage() {
                 : "Not allocated yet"
           }
         />
+        {moneyReceived > 0 && (
+          <StatCard
+            icon="savings"
+            iconClass="bg-tertiary-container text-on-tertiary-container"
+            label="Money received"
+            value={formatINR(moneyReceived)}
+            sub={
+              incomeReceived > 0 && repaymentsReceived > 0
+                ? `${formatINR(incomeReceived)} income · ${formatINR(repaymentsReceived)} repaid`
+                : incomeReceived > 0
+                  ? `${formatINR(incomeReceived)} additional income`
+                  : `${formatINR(repaymentsReceived)} repaid`
+            }
+          />
+        )}
         <StatCard
           icon="receipt_long"
           iconClass="bg-primary-container text-on-primary-container"
           label="Spent this month"
           value={formatINR(spent)}
-          sub={
-            allowance > 0
-              ? `${spendPercent}% of allowance`
-              : "No allowance set"
-          }
+          sub={allowance > 0 ? `${spendPercent}% of allowance` : "No allowance set"}
         />
         <StatCard
-          icon="trending_up"
-          iconClass="bg-jade-botanical/15 text-jade-botanical"
-          label="Remaining"
-          value={formatINR(Math.max(remaining, 0))}
-          sub={
-            remaining < 0
-              ? `Over budget by ${formatINR(Math.abs(remaining))}`
-              : "Left to spend"
+          icon="account_balance"
+          iconClass={
+            funds < 0
+              ? "bg-sangria-deep/10 text-sangria-deep"
+              : "bg-jade-botanical/15 text-jade-botanical"
           }
-          subClass={remaining < 0 ? "text-sangria-deep" : "text-on-surface-variant"}
+          label="Available funds"
+          value={formatINR(Math.max(funds, 0))}
+          sub={
+            funds < 0
+              ? `Over budget by ${formatINR(Math.abs(funds))}`
+              : moneyReceived > 0
+                ? `Incl. ${formatINR(moneyReceived)} received`
+                : "Left to spend"
+          }
+          subClass={funds < 0 ? "text-sangria-deep" : "text-on-surface-variant"}
         />
       </section>
 
+      {/* ── Budget breakdown + category spending ── */}
       <section className="grid grid-cols-1 items-start gap-6 lg:grid-cols-5">
         <Card className="flex flex-col gap-6 p-5 md:p-6 lg:col-span-3">
           <div>
@@ -219,6 +277,44 @@ export default async function DashboardPage() {
         </Card>
       </section>
 
+      {/* ── Recent incoming transactions (only shown if there are any) ── */}
+      {recentIncoming.length > 0 && (
+        <Card className="p-5 md:p-6">
+          <div className="flex items-center justify-between gap-3">
+            <h2 className="font-title-md text-title-md text-on-surface">Recent money received</h2>
+            <Link
+              href="/income"
+              className="font-label-sm text-label-sm text-jade-botanical hover:underline"
+            >
+              View all
+            </Link>
+          </div>
+          <ul className="mt-2 divide-y divide-surface-variant">
+            {recentIncoming.map((t) => (
+              <li key={t.id} className="flex items-center gap-4 py-3 first:pt-2 last:pb-0">
+                <IconCircle
+                  icon="savings"
+                  size="md"
+                  className="bg-secondary-container text-on-secondary-container"
+                />
+                <div className="min-w-0 flex-1">
+                  <p className="truncate font-title-md text-[16px] text-on-surface">{t.source}</p>
+                  <p className="font-label-sm text-label-sm text-on-surface-variant">
+                    {formatShortDate(t.date)}
+                    {` · ${t.type === "income" ? "Income" : t.type === "repayment" ? "Repayment" : "Transfer"}`}
+                    {t.description ? ` · ${t.description}` : ""}
+                  </p>
+                </div>
+                <p className="font-title-md text-title-md text-jade-botanical">
+                  +{formatINR(t.amount)}
+                </p>
+              </li>
+            ))}
+          </ul>
+        </Card>
+      )}
+
+      {/* ── Recent expenses ── */}
       <Card className="p-5 md:p-6">
         <div className="flex items-center justify-between gap-3">
           <h2 className="font-title-md text-title-md text-on-surface">Recent expenses</h2>
